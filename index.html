@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaflet Map with Shapefile</title>
+
+  <!-- Link to Leaflet CSS from CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+  <!-- Leaflet Shapefile plugin -->
+  <script src="https://unpkg.com/leaflet-shapefile@1.0.0/leaflet.shapefile.js"></script>
+
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Create a div element with id 'map' where the map will be rendered -->
+  <div id="map"></div>
+
+  <!-- Link to Leaflet JavaScript from CDN -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  <script>
+    // Initialize the map centered on Ottawa, Canada
+    var map = L.map('map').setView([45.4215, -75.6972], 13); // Ottawa's Latitude, Longitude, and Zoom level
+
+    // Add OpenStreetMap tiles as the base layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add a marker at the coordinates for Ottawa
+    L.marker([45.4215, -75.6972]).addTo(map)
+      .bindPopup('This is Ottawa, Ontario, Canada.')
+      .openPopup();
+
+    // Add Shapefile to the map
+    // You need to provide the path to your shapefile (.zip file containing .shp, .shx, and .dbf)
+    // Replace the URL below with the actual path to your shapefile
+    var shapefileUrl = 'C:/Users/trave/Desktop/Verts-Greens/Leaflet/Polling Division Shapefile - 2022 General Election.zip';  // Path to your shapefile (zip format)
+    
+    // Load the shapefile (assuming it is zipped with .shp, .shx, and .dbf files)
+    fetch(shapefileUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        var file = new File([blob], shapefileUrl);
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var shp = new L.Shapefile(e.target.result); // Pass the file content to the shapefile layer
+          shp.addTo(map); // Add the shapefile to the map
+        };
+        reader.readAsArrayBuffer(file);
+      })
+      .catch(error => console.log('Error loading shapefile:', error));
+  </script>
+
+</body>
+</html>
