@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leaflet Map with Shapefile</title>
+  <title>Leaflet Map with Shapefile and Ontario Teranet Base Layer</title>
 
   <!-- Link to Leaflet CSS from CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -30,9 +30,9 @@
     // Initialize the map centered on Ottawa, Canada
     var map = L.map('map').setView([45.4215, -75.6972], 13); // Ottawa's Latitude, Longitude, and Zoom level
 
-    // Add OpenStreetMap tiles as the base layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // Add the Ontario Teranet Standard Base Layer (Tile Layer)
+    L.tileLayer('https://tiles.teranet.ca/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.teranet.ca/">Teranet</a> contributors'
     }).addTo(map);
 
     // Add a marker at the coordinates for Ottawa
@@ -40,11 +40,9 @@
       .bindPopup('This is Ottawa, Ontario, Canada.')
       .openPopup();
 
-    // Add Shapefile to the map
-    // You need to provide the path to your shapefile (.zip file containing .shp, .shx, and .dbf)
-    // Replace the URL below with the actual path to your shapefile
-    var shapefileUrl = 'C:/Users/trave/Desktop/Verts-Greens/Leaflet/Polling Division Shapefile - 2022 General Election.zip';  // Path to your shapefile (zip format)
-    
+    // Access the Shapefile from GitHub
+    var shapefileUrl = 'https://raw.githubusercontent.com/username/repository/main/shapefiles/your_shapefile.zip';  // Replace with the actual GitHub URL
+
     // Load the shapefile (assuming it is zipped with .shp, .shx, and .dbf files)
     fetch(shapefileUrl)
       .then(response => response.blob())
