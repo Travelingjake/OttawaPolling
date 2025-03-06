@@ -40,25 +40,19 @@
       .bindPopup('This is Ottawa, Ontario, Canada.')
       .openPopup();
 
-    // Access the Shapefile from GitHub (raw URL)
-    var shapefileUrl = 'https://github.com/Travelingjake/OttawaPolling/raw/refs/heads/main/Ottawa%20Polls%20Map.zip';  // Raw URL to your shapefile
+    // Shapefile component files (use the correct URLs for .shp, .shx, and .dbf)
+    var shpFile = 'https://raw.githubusercontent.com/Travelingjake/OttawaPolling/raw/main/shapefiles/polls.shp';
+    var shxFile = 'https://raw.githubusercontent.com/Travelingjake/OttawaPolling/raw/main/shapefiles/polls.shx';
+    var dbfFile = 'https://raw.githubusercontent.com/Travelingjake/OttawaPolling/raw/main/shapefiles/polls.dbf';
 
-    // Load the shapefile (assuming it is zipped with .shp, .shx, and .dbf files)
-    fetch(shapefileUrl)
-      .then(response => response.blob())
-      .then(blob => {
-        var file = new File([blob], shapefileUrl);
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          // Pass the file content to the shapefile layer
-          var shp = new L.Shapefile(e.target.result);
-          shp.addTo(map);  // Add the shapefile to the map
-        };
-        reader.readAsArrayBuffer(file);
-      })
-      .catch(error => {
-        console.log('Error loading shapefile:', error);
-      });
+    // Create the shapefile layer using the provided files
+    var shapefile = new L.Shapefile(shpFile, {
+      shx: shxFile,
+      dbf: dbfFile
+    });
+
+    // Add shapefile to map
+    shapefile.addTo(map);
   </script>
 
 </body>
