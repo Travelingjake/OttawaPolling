@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leaflet Map with Shapefile and Ontario Teranet Base Layer</title>
+  <title>Leaflet Map with Shapefile and OpenStreetMap Base Layer</title>
 
   <!-- Link to Leaflet CSS from CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
-  <!-- Link to Omnivore (for loading shapefiles) -->
-  <script src="https://unpkg.com/leaflet-omnivore@0.5.0/leaflet-omnivore.min.js"></script>
+  <!-- Leaflet Shapefile plugin -->
+  <script src="https://unpkg.com/leaflet-shapefile@1.0.0/leaflet.shapefile.js"></script>
 
   <style>
     #map {
@@ -30,9 +30,9 @@
     // Initialize the map centered on Ottawa, Canada
     var map = L.map('map').setView([45.4215, -75.6972], 13); // Ottawa's Latitude, Longitude, and Zoom level
 
-    // Add the Ontario Teranet Standard Base Layer (Tile Layer)
-    L.tileLayer('https://tiles.teranet.ca/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.teranet.ca/">Teranet</a> contributors'
+    // Add OpenStreetMap base layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     // Add a marker at the coordinates for Ottawa
@@ -43,21 +43,22 @@
     // Access the Shapefile from GitHub (raw URL)
     var shapefileUrl = 'https://github.com/Travelingjake/OttawaPolling/raw/refs/heads/main/Ottawa%20Polls%20Map.zip';  // Raw URL to your shapefile
 
-    // Load the shapefile using Omnivore (better for large shapefiles)
-    omnivore.zip(shapefileUrl)
-      .on('ready', function() {
-        map.fitBounds(this.getBounds());  // Adjust the map to show the shapefile extent
-
-        // Set styling for the shapefile layer (50% transparency)
-        this.setStyle({
-          opacity: 0.5,  // 50% opacity
-          fillOpacity: 0.5  // 50% fill opacity for polygons
-        });
+    // Load the shapefile (assuming it is zipped with .shp, .shx, and .dbf files)
+    fetch(shapefileUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        var file = new File([blob], shapefileUrl);
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          // Pass the file content to the shapefile layer
+          var shp = new L.Shapefile(e.target.result);
+          shp.addTo(map);  // Add the shapefile to the map
+        };
+        reader.readAsArrayBuffer(file);
       })
-      .on('error', function(e) {
-        console.error('Error loading shapefile:', e); // Log any errors
-      })
-      .addTo(map);
+      .catch(error => {
+        console.log('Error loading shapefile:', error);
+      });
   </script>
 
 </body>
