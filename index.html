@@ -47,6 +47,12 @@
     omnivore.zip(shapefileUrl)
       .on('ready', function() {
         map.fitBounds(this.getBounds());  // Adjust the map to show the shapefile extent
+
+        // Set styling for the shapefile layer (50% transparency)
+        this.setStyle({
+          opacity: 0.5,  // 50% opacity
+          fillOpacity: 0.5  // 50% fill opacity for polygons
+        });
       })
       .on('error', function(e) {
         console.error('Error loading shapefile:', e); // Log any errors
