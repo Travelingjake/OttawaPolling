@@ -30,9 +30,9 @@
     // Initialize the map centered on Ottawa, Canada
     var map = L.map('map').setView([45.4215, -75.6972], 13); // Ottawa's Latitude, Longitude, and Zoom level
 
-    // Add the Ontario Teranet Standard Base Layer (Tile Layer)
-    L.tileLayer('https://tiles.teranet.ca/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.teranet.ca/">Teranet</a> contributors'
+    // Add OpenStreetMap base layer for testing
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     // Add a marker at the coordinates for Ottawa
@@ -40,22 +40,23 @@
       .bindPopup('This is Ottawa, Ontario, Canada.')
       .openPopup();
 
-    // Access the Shapefile from GitHub (raw URL)
-    var shapefileUrl = 'https://github.com/Travelingjake/OttawaPolling/raw/68e73eb6e3dd48d6088f7eb803e7124cf5330e7a/Ottawa%20Polls%20Map.zip';  // Replace with the raw GitHub URL
+    // Access the Shapefile (if hosted locally or on a CORS-enabled server)
+    var shapefileUrl = 'https://your-server.com/path-to-your-shapefile.zip'; // Use the correct URL to your shapefile
 
-    // Load the shapefile (assuming it is zipped with .shp, .shx, and .dbf files)
     fetch(shapefileUrl)
       .then(response => response.blob())
       .then(blob => {
         var file = new File([blob], shapefileUrl);
         var reader = new FileReader();
         reader.onload = function(e) {
-          var shp = new L.Shapefile(e.target.result); // Pass the file content to the shapefile layer
-          shp.addTo(map); // Add the shapefile to the map
+          var shp = new L.Shapefile(e.target.result);
+          shp.addTo(map);  // Add the shapefile to the map
         };
         reader.readAsArrayBuffer(file);
       })
-      .catch(error => console.log('Error loading shapefile:', error));
+      .catch(error => {
+        console.log('Error loading shapefile:', error);
+      });
   </script>
 
 </body>
